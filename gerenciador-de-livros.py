@@ -187,33 +187,42 @@ class Application(Funcs, Relatorios):
 
     def widgets_primeiroFrame(self):
 
+        self.canvas_bt = Canvas(self.primeiroFrame, bd=0, bg='#FFF0F5', highlightbackground= '#D3D3D3',
+                                highlightthickness=2)
+        self.canvas_bt.place(relx=0.19,rely=0.08, relwidth=0.22, relheight=0.19)
+
         # Botão limpar tela
 
         self.bt_limpar = Button(self.primeiroFrame, text="Limpar", bd=2, bg='#FFF0F5',
+                            activebackground='#FFB6C1', activeforeground='white',
                                  fg='#000000', font=('Verdana', 9, 'bold'), command= self.limpa_tela)
         self.bt_limpar.place(relx=0.2, rely=0.1, relwidth=0.1, relheight=0.15)
 
         #Botão buscar livros
 
         self.bt_buscar = Button(self.primeiroFrame, text="Buscar",bd=2, bg='#FFF0F5',
+                                activebackground='#FFB6C1', activeforeground='white',
                                  fg='#000000', font=('Verdana', 9, 'bold'), command=self.busca_livro)
         self.bt_buscar.place(relx=0.3, rely=0.1, relwidth=0.1, relheight=0.15)
 
         #Botão Adicionar novo livro
 
         self.bt_novo = Button(self.primeiroFrame, text="Novo",bd=2, bg='#FFF0F5',
+                              activebackground='#FFB6C1', activeforeground='white',
                                  fg='#000000', font=('Verdana', 9, 'bold'), command=self.add_livro)
         self.bt_novo.place(relx=0.6, rely=0.1, relwidth=0.1, relheight=0.15)
 
         #Botão Alterar livro
 
         self.bt_alterar = Button(self.primeiroFrame, text="Alterar",bd=2, bg='#FFF0F5',
+                                 activebackground='#FFB6C1', activeforeground='white',
                                  fg='#000000', font=('Verdana', 9, 'bold'), command=self.alterar_livro)
         self.bt_alterar.place(relx=0.7, rely=0.1, relwidth=0.1, relheight=0.15)
 
         #Botão Apagar livro
 
         self.bt_apagar = Button(self.primeiroFrame, text="Apagar",bd=2, bg='#FFF0F5',
+                                activebackground='#FFB6C1', activeforeground='white',
                                  fg='#000000', font=('Verdana', 9, 'bold'), command=self.deleta_livro)
         self.bt_apagar.place(relx=0.8, rely=0.1, relwidth=0.1, relheight=0.15)
 
