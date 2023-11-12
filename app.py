@@ -1,164 +1,14 @@
-from tkinter import *
-from tkinter import ttk
-import sqlite3
-
-
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter, A4
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import SimpleDocTemplate, Image
-import webbrowser
+from modulos import *
+from validEntry import Validadores
+from reports import Relatorios
+from funcionalidades import Funcs
 
 janela = Tk()
 
-class Relatorios():
-    def printLivros(self):
-        webbrowser.open("livro.pdf")
-    def geraRelatLivros(self):
-        self.c = canvas.Canvas("livro.pdf")
-
-        self.codigoRel = self.codigo_entry.get()
-        self.tituloRel = self.titulo_entry.get()
-        self.descricaoRel = self.descricao_entry.get()
-        self.autorRel = self.autor_entry.get()
-
-        self.c.setFont("Helvetica-Bold", 24)
-        self.c.drawString(200, 790, 'Ficha do livro')
-
-        self.c.setFont('Helvetica-Bold', 14)
-        self.c.drawString(50, 700, "Código:")
-        self.c.drawString(50, 670, "Título:" )
-        self.c.drawString(50, 640, "Descrição:" )
-        self.c.drawString(50, 610, "Autor:" )
-
-        self.c.setFont('Helvetica', 12)
-        self.c.drawString(150, 700,  self.codigoRel)
-        self.c.drawString(150, 670,  self.tituloRel)
-        self.c.drawString(150, 640,  self.descricaoRel)
-        self.c.drawString(150, 610,  self.autorRel)
-
-        self.c.rect(20, 730, 550, 1, fill=False, stroke=True)
-
-        self.c.showPage()
-        self.c.save()
-        self.printLivros()
-
-class Funcs():
-    def limpa_tela(self):
-        self.codigo_entry.delete(0, END)
-        self.titulo_entry.delete(0, END)
-        self.descricao_entry.delete(0, END)
-        self.autor_entry.delete(0, END)
-
-    def conecta_bd(self):
-        self.conn=sqlite3.connect("livros.bd")
-        self.cursor = self.conn.cursor(); print("Conectando ao Banco de Dados")
-
-    def desconecta_bd(self):
-        self.conn.close(); print("Desconectando ao Banco de Dados")
-
-    def montaTabelas(self):
-        self.conecta_bd()
-
-    ## Criar tabela
-
-        self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS livros(
-            cod INTEGER PRIMARY KEY, 
-            nome_titulo CHAR(40) NOT NULL,
-            descricao CHAR(500), 
-            autor CHAR(40)
-            );
-        """)
-        self.conn.commit();print("Banco de Dados criado")
-        self.desconecta_bd()
-    
-    def variaveis(self):
-        self.codigo = self.codigo_entry.get()
-        self.titulo = self.titulo_entry.get()
-        self.descricao = self.descricao_entry.get()
-        self.autor = self.autor_entry.get()
-
-    def add_livro(self):
-        self.variaveis()
-        self.conecta_bd()
-
-        self.cursor.execute(""" INSERT INTO livros (nome_titulo, descricao, autor)
-                            VALUES (?, ?, ?)""",(self.titulo, self.descricao, self.autor))
-        
-        self.conn.commit()
-        self.desconecta_bd()
-        self.select_lista()
-        self.limpa_tela()
-
-    def select_lista(self):
-        self.listaLiv.delete(*self.listaLiv.get_children())
-        self.conecta_bd()
-        lista = self.cursor.execute(""" SELECT cod, nome_titulo, descricao, autor FROM livros
-        ORDER BY nome_titulo ASC; """)
-        for i in lista:
-            self.listaLiv.insert("", END, values=i)
-            self.conecta_bd()
-            self.desconecta_bd()
-
-    def OnDoubleClick(self, event):
-        self.limpa_tela()
-        self.listaLiv.selection()
-
-        for n in self.listaLiv.selection():
-            col1, col2, col3, col4 = self.listaLiv.item(n, 'values')
-        self.codigo_entry.insert(END,col1)
-        self.titulo_entry.insert(END, col2)
-        self.descricao_entry.insert(END, col3)
-        self.autor_entry.insert(END, col4)
-        
-
-
-    def deleta_livro(self):
-        self.variaveis()
-        self.conecta_bd()
-        self.cursor.execute(""" DELETE FROM livros WHERE cod = ? """,(self.codigo))
-        self.conn.commit()
-        self.desconecta_bd()
-
-        self.limpa_tela()
-        self.select_lista()
-
-    def alterar_livro(self):
-        self.variaveis()
-        self.conecta_bd()
-        self.cursor.execute(""" UPDATE livros SET nome_titulo = ?, descricao = ?, autor = ?
-            WHERE cod = ? """,(self.titulo, self.descricao, self.autor, self.codigo))
-        self.conn.commit()
-
-        self.desconecta_bd()
-        self.select_lista()
-        self.limpa_tela()
-
-    def busca_livro(self):
-        self.conecta_bd()
-        self.listaLiv.delete(*self.listaLiv.get_children())
-
-        self.titulo_entry.insert(END, '%')
-        titulo = self.titulo_entry.get()
-        self.cursor.execute(""" SELECT cod, nome_titulo, descricao, autor
-        FROM livros WHERE nome_titulo LIKE '%s' ORDER BY nome_titulo ASC """ % titulo)
-        buscanomeLiv = self.cursor.fetchall()
-        
-        for i in buscanomeLiv:
-            self.listaLiv.insert("", END, values =i)
-
-            self.limpa_tela()
-
-        self.desconecta_bd()
-
-
-
-
-class Application(Funcs, Relatorios):
+class Application(Funcs, Relatorios, Validadores):
     def __init__(self):
         self.janela = janela
+        self.validaEntradas()
         self.tela()
         self.frames_da_tela()
         self.widgets_primeiroFrame()
@@ -232,7 +82,7 @@ class Application(Funcs, Relatorios):
         self.lb_codigo = Label(self.primeiroFrame, text="Código", bg="#FFE4E1", fg='#000000')
         self.lb_codigo.place(relx=0.05, rely=0.05)
 
-        self.codigo_entry = Entry(self.primeiroFrame, bg="#F5F5F5", fg='#000000')
+        self.codigo_entry = Entry(self.primeiroFrame, bg="#F5F5F5", fg='#000000', validate = "key", validatecommand = self.vcmd4)
         self.codigo_entry.place(relx=0.05, rely=0.15, relwidth=0.08)
 
          #Criação da label e entrada do título
@@ -301,8 +151,7 @@ class Application(Funcs, Relatorios):
 
         filemenu2.add_command(label="Lista de Livros", command= self.geraRelatLivros)
 
-
-
-
+    def validaEntradas(self):
+        self.vcmd4 = (self.janela.register(self.validate_entry4), "%P")
 
 Application()
