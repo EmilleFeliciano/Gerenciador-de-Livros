@@ -81,7 +81,7 @@ class Funcs():
     def deleta_livro(self):
         self.variaveis()
         self.conecta_bd()
-        self.cursor.execute(""" DELETE FROM livros WHERE cod = ? """,(self.codigo))
+        self.cursor.execute(""" DELETE FROM livros WHERE cod = ? """,(self.codigo,))
         self.conn.commit()
         self.desconecta_bd()
 
