@@ -2,8 +2,28 @@ from modulos import *
 from validEntry import Validadores
 from reports import Relatorios
 from funcionalidades import Funcs
+from screeninfo import get_monitors
 
 janela = Tk()
+
+
+def centralizar_janela(janela):
+    
+    monitor = get_monitors()[0]
+
+    largura_janela = janela.winfo_reqwidth()
+    altura_janela = janela.winfo_reqheight()
+
+    # Calcule as coordenadas x e y para centralizar a janela
+    x = monitor.width // 3 - largura_janela // 3
+    y = monitor.height // 4 - altura_janela // 4
+
+    # Defina a geometria da janela para centralizá-la
+    janela.geometry(f"{largura_janela}x{altura_janela}+{x}+{y}")
+
+
+centralizar_janela(janela)
+
 
 class Application(Funcs, Relatorios, Validadores):
     def __init__(self):
