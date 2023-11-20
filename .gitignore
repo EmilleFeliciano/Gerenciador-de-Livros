@@ -1,0 +1,14 @@
+# Ignorar arquivos bytecode Python
+*.pyc
+
+# Ignorar diretórios de construção Python
+__pycache__/
+build/
+dist/
+*.spec
+
+# Ignorar arquivos PDF
+*.pdf
+
+# Ignorar diretório de banco de dados
+bd/

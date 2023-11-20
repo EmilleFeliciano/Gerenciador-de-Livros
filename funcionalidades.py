@@ -79,7 +79,12 @@ class Funcs():
 
 
     def deleta_livro(self):
-        self.variaveis()
+
+        confirmar = messagebox.askyesno("Confirmação", "Tem certeza que deseja excluir o livro?")
+        
+        if confirmar:
+
+            self.variaveis()
         self.conecta_bd()
         self.cursor.execute(""" DELETE FROM livros WHERE cod = ? """,(self.codigo,))
         self.conn.commit()
@@ -89,7 +94,12 @@ class Funcs():
         self.select_lista()
 
     def alterar_livro(self):
-        self.variaveis()
+
+        confirmar = messagebox.askyesno("Confirmação", "Tem certeza que deseja alterar o livro?")
+        
+        if confirmar:
+
+            self.variaveis()
         self.conecta_bd()
         self.cursor.execute(""" UPDATE livros SET nome_titulo = ?, descricao = ?, autor = ?
             WHERE cod = ? """,(self.titulo, self.descricao, self.autor, self.codigo))
